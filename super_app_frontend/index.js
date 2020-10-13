@@ -504,14 +504,20 @@ function selectSuperHeroTeams(){
     let teams = currentUser['teams'];
     fetch(serverUrl + 'teams/' + this.id)
     .then(resp=>resp.json())
-    .then(object=> {buildCurrentTeam(object)})
+    .then(object=> {
+        return buildCurrentTeam(object);
+    })
     // buildCarouselOfHeroes(currentTeam, currentTeamMemberArray);
 }
 function buildCurrentTeam(team){
+    debugger;
     buildCarouselOfHeroes(team, team['superheros']);
 }
 
 function buildCarouselOfHeroes(cTeam, cTMArray){
+    currentTeam = cTeam;
+    currentTeamMemberArray = cTMArray;
+
     const testChild = document.querySelector('.carousel');
     if (!!testChild){
         const parent = document.querySelector('#carousel-row');
@@ -522,8 +528,8 @@ function buildCarouselOfHeroes(cTeam, cTMArray){
     divCarousel.className = "carousel";
     for(const key in cTMArray){
         debugger;
-        const currentTeamHero = document.getElementById(`${cTMArray[key]['name']} ${cTMArray[key]['id']}`);
-        currentTeamHero.value = 'on'
+        // const currentTeamHero = document.getElementById(`${cTMArray[key]['name']} ${cTMArray[key]['id']}`);
+        // currentTeamHero.value = 'on'
         const aCarouselItem = document.createElement('a');
         aCarouselItem.className = "carousel-item";
         const keyString = keyToString(key);
@@ -535,7 +541,43 @@ function buildCarouselOfHeroes(cTeam, cTMArray){
     }
     divCarouselRow.appendChild(divCarousel);
     
+    const updateTeamButton = document.createElement('button');
+    updateTeamButton.classList.add('btn');
+    updateTeamButton.innerHTML="update"
+    updateTeamButton.id = cTeam['id'];
+    updateTeamButton.addEventListener('click', modifyUsersTeam)
+    divCarouselRow.appendChild(updateTeamButton);
 
+}
+function modifyUsersTeam(e){
+        debugger;
+
+        e.preventDefault();
+        team = {
+            name: currentTeam["name"],
+            user_id: currentTeam["user"]["id"],
+            superhero_ids: convertTeamToIds(),
+        };
+        fetch(serverUrl + 'teams/' + currentTeam['id'], { 
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            
+            body: JSON.stringify({team})
+        })
+        .then(resp => resp.json())
+        .then(object => {
+            location.reload()
+        })
+        //if on that means we are adding a team member 
+        //if off that means that we are subtracting a team member
+                
+}
+
+function convertTeamToIds(){
+    return currentTeamMemberArray.map(element => element['id'])
 }
 function keyToString(key){
     switch (key){
@@ -719,6 +761,7 @@ function buildCardNoSwitch(hero){
     return divRow
 }
 //build hero card
+                
 function buildCard(hero){
     const divRow = document.createElement('div');
     divRow.className = "row"
@@ -792,14 +835,14 @@ function buildCard(hero){
     const liTeamAffiliation = document.createElement('li');
     liTeamAffiliation.className = 'tab';
     liTeamAffiliation.appendChild(aTeamAffiliation);
-
-
+    
+    
     ulTabs.appendChild(lifullName);
     ulTabs.appendChild(liPublisherTab);
     ulTabs.appendChild(liTeamAffiliation);
     divCardTab.appendChild(ulTabs)
     divCard.appendChild(divCardTab);
-
+    
     //append Card Content
     const divCardContentTab = document.createElement('div');
     divCardContentTab.className = 'card-content grey lighten-4';
@@ -807,54 +850,77 @@ function buildCard(hero){
     const divPublisher = document.createElement('div');
     divPublisher.id=`#test4`;
     divPublisher.innerHTML=`${hero['publisher']}`;
-
+    
     const divFullName = document.createElement('div');
     divFullName.id=`#test5`;
     divFullName.innerHTML=`${hero['full_name']}`;
-
+    
     const divTeamAffiliation = document.createElement('div');
     divTeamAffiliation.id=`#test6`;
     divTeamAffiliation.innerHTML=`${hero['team_affiliation']}`;
     //********************************************************* */
     
-    const divCheckBoxClass = document.createElement('div');
-    divCheckBoxClass.className = 'checkbox';
-    const pCheckBox = document.createElement('p');
-    const labelForCheckBox = document.createElement('label');
-
-    const inputForCheckbox = document.createElement('input');
-    inputForCheckbox.type = "checkbox"
-    inputForCheckbox.id = `${hero['name']} ${hero['id']}`;
-    //IMPORTANT
-    inputForCheckbox.addEventListener('click', modifyUsersTeam);
-    const spanForSwitch = document.createElement('span');
     
-    const formCreateCheckBox = document.createElement('form');
-    formCreateCheckBox.action = '#';
-    labelForCheckBox.appendChild(inputForCheckbox);
-    labelForCheckBox.appendChild(spanForSwitch);
-    pCheckBox.appendChild(labelForCheckBox);
-    formCreateCheckBox.appendChild(labelForCheckBox);
-    divCheckBoxClass.appendChild(formCreateCheckBox);
-    //******************************************************* */
+    const aClassAddFloatingButton = document.createElement("a");
+    aClassAddFloatingButton.className = "btn-floating";
+    aClassAddFloatingButton.classList.add("halfway-fab");
+    aClassAddFloatingButton.classList.add("waves-effect");
+    aClassAddFloatingButton.classList.add("waves-light");
+    aClassAddFloatingButton.classList.add("red");
+    aClassAddFloatingButton.id = `add ${hero['name']} ${hero['id']}`;
+    aClassAddFloatingButton.addEventListener('click', addToUsersTeam)
+
+    const iClassAddFloatingButton = document.createElement('i');
+    iClassAddFloatingButton.className = "material-icons";
+    iClassAddFloatingButton.innerHTML = "add";
+    aClassAddFloatingButton.appendChild(iClassAddFloatingButton);
+    divImage.appendChild(aClassAddFloatingButton);
+
+    const aClassRemoveFloatingButton = document.createElement("a");
+    aClassRemoveFloatingButton.className = "btn-floating";
+    aClassRemoveFloatingButton.classList.add("halfway-fab");
+    aClassRemoveFloatingButton.classList.add("waves-effect");
+    aClassRemoveFloatingButton.classList.add("waves-light");
+    aClassRemoveFloatingButton.classList.add("red");
+    aClassRemoveFloatingButton.addEventListener('click', removeFromUsersTeam)
+    aClassRemoveFloatingButton.id = `remove ${hero['name']} ${hero['id']}`;
+    const iClassRemoveFloatingButton = document.createElement('i');
+    iClassRemoveFloatingButton.className = "material-icons";
+    iClassRemoveFloatingButton.innerHTML = "minus";
+    aClassRemoveFloatingButton.appendChild(iClassRemoveFloatingButton);
+    divImage.appendChild(aClassRemoveFloatingButton);
+
     divCardContentTab.appendChild(divFullName);
     divCardContentTab.appendChild(divPublisher);
     divCardContentTab.appendChild(divTeamAffiliation);
     divCard.appendChild(divCardContentTab);
-    divCard.appendChild(divCheckBoxClass);
 
     divColumn.appendChild(divCard);
     divRow.appendChild(divColumn);
     return divRow
 }
-
-
-function modifyUsersTeam(){
-    debugger;
-    //if on that means we are adding a team member 
-    //if off that means that we are subtracting a team member
-
+function removeFromUsersTeam(){
+    let idArray = this.id.split(" ");
+    let id = idArray[idArray.length-1];
+    let currentHero = heroes.find(element => element.id == id)
+    if (!!(currentTeamMemberArray.find(element => element.id == id))){
+        currentTeamMemberArray = currentTeamMemberArray.filter(element => !(element == currentHero));
+        buildCarouselOfHeroes(currentTeam, currentTeamMemberArray);
+        this.disable = true;
+    }
 }
+function addToUsersTeam(){
+    debugger;
+    let idArray = this.id.split(" ");
+    let id = idArray[idArray.length-1];
+    if (!(currentTeamMemberArray.find(element => element.id == id))){
+        currentTeamMemberArray.push(heroes.find(element => element.id == id));
+        this.disable = true;
+        buildCarouselOfHeroes(currentTeam, currentTeamMemberArray);
+    }
+    
+}
+
 
 function displayHeroes(heroes){
     for(const hero of heroes){
