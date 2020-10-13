@@ -1,0 +1,31 @@
+1.  I would like a user to select whether they would like to register as
+a new user or select their name from a drop down list of users
+2.  If they choose to select their name from the list of registered users 
+then they should have menu pop up that as them to create a new super hero team
+or select a current super hero team
+3.  if they choose create a superhero team they will be promped to add a name and then select heroes from the list of all hereos 
+whenever they select a hero the hero will be added to there team and they will have the option to remove the hero
+4.  Each hero card should appear in the hero pane 
+
+    for(const hero of heroes){
+        const liHeroes = document.createElement('li');
+        const divVisibleHeader = document.createElement('div');
+
+
+        divVisibleHeader.className= 'collapsible-header';
+        const iSubClass = document.createElement('i');
+        iSubClass.className= 'collapsible-header';
+        const divVisibleBody = document.createElement('div');
+        divVisibleBody.className = 'collapsible-body';
+        divVisibleHeader.innerHTML = `${hero['name']}`;
+        const divHero = buildCard(hero)
+        
+        divVisibleBody.appendChild(divHero);
+        divVisibleHeader.appendChild(iSubClass);
+        liHeroes.appendChild(divVisibleHeader);
+        liHeroes.appendChild(divVisibleBody);
+        
+        const ul = document.querySelector('ul.collapsible');
+        ul.appendChild(liHeroes);
+    }
+}
