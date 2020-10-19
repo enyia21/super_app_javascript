@@ -1,23 +1,26 @@
 const createdTeams = [];
 const userTeams = [];
-let currentTeamMemberArray = []
-let currentTeam;
-
 function getUsersTeams(){
-    fetch(serverUrl + 'users/' + this.id)
+    fetch(serverUrl + 'users/' + currentUser._id)
     .then(resp => resp.json())
     .then(object=> listOfTeams(object));
 }
 
-function listOfTeams(user_with_teams){
-    currentUser = user_with_teams;
+class Team{
+    constructor(name, user_id){
+        this._name = name;
+        this._user_id = user_id;
+        this._superheros = [];
+    }
+}   
+function listOfTeams(){
     const ulTeamCollection = document.getElementById('ul team-collection-header');
     
     //create collection header
     const liTeamHeader = document.createElement('li');
     liTeamHeader.className= 'collection-header';
     hTeamHeader = document.createElement('h5');
-    hTeamHeader.innerHTML = `${user_with_teams['first_name']} ${user_with_teams['last_name']}`;
+    hTeamHeader.innerHTML = `${currentUser._first_name} ${currentUser._last_name}`;
     liTeamHeader.appendChild(hTeamHeader);
     debugger;
     //Create a new team option
@@ -34,8 +37,8 @@ function listOfTeams(user_with_teams){
     ulTeamCollection.appendChild(liTeamHeader);
     ulTeamCollection.appendChild(liCreateANewTeam);
     
-    if (!!user_with_teams['teams']){
-        let teams = user_with_teams['teams'];
+    if (!!currentUser._teams){
+        let teams = currentUser._teams;
         // for(const team of teams){
         //     userTeams.push(team);
         // }
@@ -125,11 +128,12 @@ function createNewTeam(){
 
     
 }
-
+let currentTeamMemberArray = []
+let currentTeam;
 function selectSuperHeroTeams(){
     displayHeroes(heroes);
-    let teams = currentUser['teams'];
-    fetch(serverUrl + 'teams/' + this.id)
+    let teams = currentUser._teams;
+    fetch(serverUrl + 'teams/' + currentUser._id)
     .then(resp=>resp.json())
     .then(object=> {
         return buildCurrentTeam(object);
@@ -140,87 +144,143 @@ function buildCurrentTeam(team){
     debugger;
     buildCarouselOfHeroes(team, team['superheros']);
 }
-function modifyUsersTeam(e){
-    debugger;
 
-    e.preventDefault();
-    team = {
-        name: currentTeam["name"],
-        user_id: currentTeam["user"]["id"],
-        superhero_ids: convertTeamToIds(),
-    };
-    fetch(serverUrl + 'teams/' + currentTeam['id'], { 
-        method: "PATCH",
-        headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-        },
-        
-        body: JSON.stringify({team})
-    })
-    .then(resp => resp.json())
-    .then(object => {
-        location.reload()
-    })
-    //if on that means we are adding a team member 
-    //if off that means that we are subtracting a team member
+function buildCarouselOfHeroes(cTeam, cTMArray){
+    currentTeam = cTeam;
+    currentTeamMemberArray = cTMArray;
+
+    const testChild = document.querySelector('.carousel');
+    if (!!testChild){
+        const parent = document.querySelector('#carousel-row');
+        parent.removeChild(testChild)
+    }
+    const divCarouselRow =  document.querySelector('#carousel-row');
+    const divCarousel = document.createElement('div');
+    divCarousel.className = "carousel";
+    for(const key in cTMArray){
+        debugger;
+        // const currentTeamHero = document.getElementById(`${cTMArray[key]['name']} ${cTMArray[key]['id']}`);
+        // currentTeamHero.value = 'on'
+        const aCarouselItem = document.createElement('a');
+        aCarouselItem.className = "carousel-item";
+        const keyString = keyToString(key);
+        aCarouselItem.href = `#${keyString}`;
+        debugger;
+        const divHero = buildCardNoSwitch(cTMArray[key]);
+        aCarouselItem.appendChild(divHero);
+        divCarousel.appendChild(aCarouselItem);
+    }
+    divCarouselRow.appendChild(divCarousel);
+    
+    const updateTeamButton = document.createElement('button');
+    updateTeamButton.classList.add('btn');
+    updateTeamButton.innerHTML="update"
+    updateTeamButton.id = cTeam['id'];
+    updateTeamButton.addEventListener('click', modifyUsersTeam)
+    divCarouselRow.appendChild(updateTeamButton);
+
+}
+function modifyUsersTeam(e){
+        debugger;
+
+        e.preventDefault();
+        team = {
+            name: currentTeam["name"],
+            user_id: currentTeam["user"]["id"],
+            superhero_ids: convertTeamToIds(),
+        };
+        fetch(serverUrl + 'teams/' + currentTeam['id'], { 
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
             
+            body: JSON.stringify({team})
+        })
+        .then(resp => resp.json())
+        .then(object => {
+            location.reload()
+        })
+        //if on that means we are adding a team member 
+        //if off that means that we are subtracting a team member
+                
 }
 
 function convertTeamToIds(){
-return currentTeamMemberArray.map(element => element['id'])
+    return currentTeamMemberArray.map(element => element['id'])
 }
 function keyToString(key){
-switch (key){
-    case '1':
-        return 'one!';
-    case '2':
-        return 'two!';
-    case '3': 
-        return 'three!';
-    case '4':
-        return 'four!';
-    case '5': 
-        return 'five!';
-    case '6':     
-        return 'six!';
-    case '7': 
-        return 'seven!';
-    case '8': 
-        return 'eight!';
-    case '9': 
-        return 'nine!';
-    case '10': 
-        return 'ten!';
-    case '11': 
-        return 'eleven!';
-    case '12': 
-        return 'twelve!';
-    case '13': 
-        return 'thirteen!';
-    default:
-        return 'fourteen!';
-}
+    switch (key){
+        case '1':
+            return 'one!';
+        case '2':
+            return 'two!';
+        case '3': 
+            return 'three!';
+        case '4':
+            return 'four!';
+        case '5': 
+            return 'five!';
+        case '6':     
+            return 'six!';
+        case '7': 
+            return 'seven!';
+        case '8': 
+            return 'eight!';
+        case '9': 
+            return 'nine!';
+        case '10': 
+            return 'ten!';
+        case '11': 
+            return 'eleven!';
+        case '12': 
+            return 'twelve!';
+        case '13': 
+            return 'thirteen!';
+        default:
+            return 'fourteen!';
+    }
 }
 function addTeam(){
-team = {
-    name: getTeamName().value,
-    user_id: currentUser['id'],
-    superhero_ids: [],
-};
-debugger;
-fetch(serverUrl + 'teams', {
-    method: 'POST',
-    headers: {
-        "Content-Type": "application/json",
-        "Accept": "appication/json"
-    }, 
-    body: JSON.stringify({team})
+    team = {
+        name: getTeamName().value,
+        user_id: currentUser._id,       
+        superhero_ids: [],
+    };
+    debugger;
+    fetch(serverUrl + 'teams', {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "appication/json"
+        }, 
+        body: JSON.stringify({team})
 
-})
-.then(resp => resp.json())
-.then(object => {
-    location.reload();
-})
-return console.log('We made it');
+    })
+    .then(resp => resp.json())
+    .then(object => {
+        location.reload();
+    })
+    return console.log('We made it');
+}
+function removeFromUsersTeam(){
+    let idArray = this.id.split(" ");
+    let id = idArray[idArray.length-1];
+    let currentHero = heroes.find(element => element.id == id)
+    if (!!(currentTeamMemberArray.find(element => element.id == id))){
+        currentTeamMemberArray = currentTeamMemberArray.filter(element => !(element == currentHero));
+        buildCarouselOfHeroes(currentTeam, currentTeamMemberArray);
+        this.disable = true;
+    }
+}
+function addToUsersTeam(){
+    debugger;
+    let idArray = this.id.split(" ");
+    let id = idArray[idArray.length-1];
+    if (!(currentTeamMemberArray.find(element => element.id == id))){
+        currentTeamMemberArray.push(heroes.find(element => element.id == id));
+        this.disable = true;
+        buildCarouselOfHeroes(currentTeam, currentTeamMemberArray);
+    } 
 }

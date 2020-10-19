@@ -144,29 +144,11 @@ function listAllUsersOnScreen(){
     for(const appUser of appUsers){
         const presenceTest = document.getElementById(`${appUser['id']}`)
         if (!presenceTest){
-            const liUsers = document.createElement('li');
-            const aUsers = document.createElement('a');
-            aUsers.id = appUser['id'];
-            aUsers.href = '#';
-            aUsers.innerHTML = `${appUser['first_name']} ${appUser['last_name']}`
-            aUsers.addEventListener('click', getUsersTeams)
-            liUsers.appendChild(aUsers);
-
-            const deleteUserButton = document.createElement('button');
-            deleteUserButton.classList.add('btn');
-            deleteUserButton.innerHTML = 'Delete User';
-            deleteUserButton.addEventListener('click', deleteUser);
-            deleteUserButton.id = appUser.id;
-
-            const editUserButton = document.createElement('button');
-            editUserButton.classList.add('btn')
-            editUserButton.innerHTML = "Edit User";
-            editUserButton.addEventListener('click', editUsersForm);
-            editUserButton.id = appUser.id;
-
-            liUsers.appendChild(deleteUserButton);
-            liUsers.appendChild(editUserButton);
-            ulUserDropdown.appendChild(liUsers);
+            debugger;
+            let {first_name, last_name, email, age, id} = appUser;
+            const newUser = new User(first_name, last_name, email, age, id)
+            let newLi = newUser.createDropDownField();
+            ulUserDropdown.appendChild(newLi);
         }
     }
 }
@@ -274,7 +256,7 @@ function editUsersForm(e){
     divAgeInputField.appendChild(inputAgeInformation);
     divAgeRow.appendChild(divAgeInputField);
     formCreator.appendChild(divAgeRow);
-
+    
     const makeEditUserButton = document.createElement('button');
     makeEditUserButton.classList.add('btn');
     makeEditUserButton.innerHTML = 'Update User';
@@ -290,8 +272,8 @@ function editUser(e) {
         email: email().value,
         age: age().value
     };
-
-fetch(serverUrl + 'users/' + this.id, { 
+    
+    fetch(serverUrl + 'users/' + this.id, { 
     method: "PATCH",
     headers: {
         "Content-Type": "application/json",
@@ -307,3 +289,43 @@ fetch(serverUrl + 'users/' + this.id, {
     location.reload()
 })
 };
+
+class User{
+    constructor(firstName, lastName, email, age, id){
+        this._firstName = firstName;
+        this._lastName = lastName;
+        this._email = email;
+        this._age = age;
+        this._id = id;
+    }
+
+    createDropDownField(){
+        const liUsers = document.createElement('li');
+        const aUsers = document.createElement('a');
+        aUsers.id = this._id;
+        aUsers.href = '#';
+        aUsers.innerHTML = `${this._firstName} ${this._lastName}`
+        aUsers.addEventListener('click', getUsersTeams)
+        liUsers.appendChild(aUsers);
+        
+        const deleteUserButton = document.createElement('button');
+        deleteUserButton.classList.add('btn');
+        deleteUserButton.innerHTML = 'Delete User';
+        deleteUserButton.addEventListener('click', deleteUser);
+        deleteUserButton.id = this._id;
+        
+        const editUserButton = document.createElement('button');
+        editUserButton.classList.add('btn')
+        editUserButton.innerHTML = "Edit User";
+        editUserButton.addEventListener('click', editUsersForm);
+        editUserButton.id = this._id;
+        
+        liUsers.appendChild(deleteUserButton);
+        liUsers.appendChild(editUserButton);
+        return liUsers;
+        
+    }
+
+    
+}
+
