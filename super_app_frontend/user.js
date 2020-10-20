@@ -18,7 +18,7 @@ class User {
         this._age = age;
         this._id = id;
         this._teams = teams;
-        debugger;
+        
         User.all = [];
         User.all.push(this);
     }
@@ -103,7 +103,7 @@ class User {
             Forms.editUserRegistration();
     }
     displayLogInName(){
-        debugger;
+        
         const ulTopNavBar = document.querySelector('.right');
         //hide login in button
         const navBarLogin = document.getElementById("login");
@@ -174,7 +174,7 @@ class User {
     }
 
     updateCurrentUser(){
-        debugger;
+        
         fetch (serverUrl + "users/" + this._id)
         .then(resp=>resp.json())
         .then(object => {
@@ -428,7 +428,7 @@ fetch(serverUrl + 'users/' + currentUser._id, {
     i = appUsers.findIndex(element => element.id == object.id);
     appUsers[i] = object;
     currentUser = new User(object);
-    debugger;
+    
     currentUser.updateDisplayNameLogin();
 })
 };

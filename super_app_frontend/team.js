@@ -30,11 +30,9 @@ class Team{
         const liTeamHeader = document.createElement('li');
         liTeamHeader.className= 'collection-header';
         liTeamHeader.id = 'user-teams-collection'
-        debugger;
         const hTeamHeader = document.createElement('h5');
         hTeamHeader.innerHTML = `${currentUser._first_name} ${currentUser._last_name}`;
         liTeamHeader.appendChild(hTeamHeader);
-        debugger;
         //Create a new team option
         const liCreateANewTeam = document.createElement('li');
         liCreateANewTeam.className='collection-item';
@@ -45,7 +43,7 @@ class Team{
         
         if (!!currentUser._teams){
             let teams = currentUser._teams;
-            debugger;
+
             for(const team of teams){
                     const liTeam = document.createElement('li');
                     liTeam.className='collection-item';
@@ -82,13 +80,12 @@ class Team{
 
     static selectSuperHeroTeams(e){
         e.preventDefault();
-        debugger;
         displayHeroes(heroes);
         let teams = currentUser._teams;
         fetch(serverUrl + 'teams/' + this.id)
         .then(resp=>resp.json())
         .then(object=> {
-            debugger;
+
             return Team.buildCurrentTeam(object);
         })
         // buildCarouselOfHeroes(currentTeam, currentTeamMemberArray);
@@ -131,14 +128,14 @@ class Team{
         // const divCarousel = document.createElement('div');
         // divCarousel.className = "carousel";
         // for(const key in cTMArray){
-        //     debugger;
+        //  
         //     // const currentTeamHero = document.getElementById(`${cTMArray[key]['name']} ${cTMArray[key]['id']}`);
         //     // currentTeamHero.value = 'on'
         //     const aCarouselItem = document.createElement('a');
         //     aCarouselItem.className = "carousel-item";
         //     const keyString = this.keyToString(key);
         //     aCarouselItem.href = `#${keyString}`;
-        //     debugger;
+        //  
         //     const divHero = buildHeroImageTag(cTMArray[key]);
         //     aCarouselItem.appendChild(divHero);
         //     divCarousel.appendChild(aCarouselItem);
@@ -190,12 +187,11 @@ class Team{
     }
 
     static modifyFormForDeletedTeam(){
-        debugger;
         currentUser.updateCurrentUser();
     }
     static modifyUsersTeam(e){
         e.preventDefault()
-            debugger;
+
             const team = {
                 name: Team.currentTeam["name"],
                 user_id: Team.currentTeam["user"]["id"],
@@ -254,7 +250,6 @@ class Team{
     }
     
     static removeFromUsersTeam(){
-        debugger;
         let idArray = this.id.split(" ");
         let remove = idArray[idArray.length-1];
         let currentHero = heroes.find(element => element.id == remove)
@@ -265,7 +260,6 @@ class Team{
         }
     }
     static addToUsersTeam(){
-        debugger;
         let addArray = this.id.split(" ");
         let add =addArray[addArray.length-1];
         if (!(Team.currentTeamMemberArray.find(element => element.id ==add))){
