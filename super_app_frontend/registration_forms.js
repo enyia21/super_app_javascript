@@ -206,4 +206,41 @@ class Forms{
         const registrationSection = document.getElementById('user-registration');
         registrationSection.appendChild(formDiv);
     }
+
+    static createNewTeam(){
+        debugger;
+        const divCreateTeamRow = document.getElementById('add-team');
+    
+        const formCreateNewTeam = document.createElement('form');
+        formCreateNewTeam.className = "col s12";
+        const divCreateFormRow = document.createElement('div');
+        divCreateFormRow.className = 'row';
+        const divCreateColumnRow = document.createElement('div');
+        divCreateColumnRow.className = 'col s12'
+        divCreateColumnRow.innerHTML = "Please input the team name: ";
+        const divCreateNameInputField = document.createElement('div');
+        divCreateNameInputField.className = "input-field inline"
+    
+        const inputCreateTeamName = document.createElement('input');
+        inputCreateTeamName.id = 'name-inline';
+        inputCreateTeamName.type = 'text';
+        inputCreateTeamName.class = 'validate'
+        divCreateNameInputField.appendChild(inputCreateTeamName);
+    
+        const labelCreateTeamName = document.createElement('label');
+        labelCreateTeamName.setAttribute('for', "name-inline");
+        labelCreateTeamName.innerHTML =  "here!!";
+        divCreateNameInputField.appendChild(labelCreateTeamName);
+        
+        const createSubmitButton = document.createElement('button');
+        createSubmitButton.classList.add('btn');
+        createSubmitButton.innerHTML = "Create Team!!"
+        createSubmitButton.addEventListener('click', Team.addTeam);
+        
+        divCreateColumnRow.appendChild(divCreateNameInputField);
+        divCreateColumnRow.appendChild(createSubmitButton);
+        divCreateFormRow.appendChild(divCreateColumnRow);
+        formCreateNewTeam.appendChild(divCreateFormRow);
+        divCreateTeamRow.appendChild(formCreateNewTeam);
+    }
 }

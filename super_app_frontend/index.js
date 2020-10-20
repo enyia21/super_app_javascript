@@ -5,7 +5,7 @@ function callONLoad(){
 
 
     const sliderItem = document.querySelectorAll('.slider');
-    const instances = M.Slider.init(sliderItem, {
+    M.Slider.init(sliderItem, {
         indicators: false,
         height: 600, 
         transition: 500,
@@ -21,11 +21,13 @@ function callONLoad(){
 
     const collapse = document.querySelectorAll('.collapsible');
     M.Collapsible.init(collapse, {});
-    // const carousel = document.querySelectorAll('.carousel');
-    // let carousels = M.Carousel.init(carousel, {
-    //     duration: 500,
-    //     numVisible: 5
-    // });
+    const carousel = document.querySelectorAll('.carousel');
+    let carousels = M.Carousel.init(carousel, {
+        duration: 500,
+        numVisible: 5,
+        dist: -100,
+        fullWidth: true
+    });
 
     
     signUp();

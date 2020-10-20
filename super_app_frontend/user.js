@@ -70,6 +70,7 @@ class User {
         signupButtonSideMenu().parentElement.remove();
         this.displayLogInName();
         this.displayLogInNameSideMenu();
+        Team.listOfTeams();
     }
     
     editUserButton(){
@@ -102,6 +103,7 @@ class User {
             Forms.editUserRegistration();
     }
     displayLogInName(){
+        debugger;
         const ulTopNavBar = document.querySelector('.right');
         //hide login in button
         const navBarLogin = document.getElementById("login");
@@ -169,6 +171,18 @@ class User {
     }
     logOut(){
         location.reload();
+    }
+
+    updateCurrentUser(){
+        debugger;
+        fetch (serverUrl + "users/" + this._id)
+        .then(resp=>resp.json())
+        .then(object => {
+            let temp = new User(object);
+            currentUser = temp;
+            Team.listOfTeams();
+            // return currentUser;
+        })
     }
     
 }
