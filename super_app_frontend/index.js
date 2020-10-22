@@ -4,8 +4,8 @@ function callONLoad(){
     M.Sidenav.init(sideNav, {});
 
 
-    const sliderItem = document.querySelectorAll('.slider');
-    M.Slider.init(sliderItem, {
+    var sliderItem = document.querySelectorAll('.slider');
+    var instances = M.Slider.init(sliderItem, {
         indicators: false,
         height: 600, 
         transition: 500,
@@ -17,12 +17,14 @@ function callONLoad(){
     let scrolls = M.ScrollSpy.init(scrollSpy, {});
 
     const dropdown = document.querySelectorAll('.dropdow-trigger');
-    let dropdowns = M.Dropdown.init(dropdown, {});
+    let dropdowns = M.Dropdown.init(dropdown, {
+        alignment: 'center'
+    });
 
     const collapse = document.querySelectorAll('.collapsible');
     M.Collapsible.init(collapse, {});
     const carousel = document.querySelectorAll('.carousel');
-    let carousels = M.Carousel.init(carousel, {
+    var carousels = M.Carousel.init(carousel, {
         duration: 500,
         numVisible: 5,
         dist: -100,
@@ -37,5 +39,15 @@ function callONLoad(){
     getAllUsers();
     loadHeroes();
     getHeroes();
-}   
+}  
+
+function callOnSlideCreation(){
+    const sliderItem = document.querySelector('#team-slides');
+    const slides = M.Slider.init(sliderItem, {
+        height: 400, 
+        transition: 500,
+        interval: 4000,
+        
+    });
+}
 

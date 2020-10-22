@@ -66,8 +66,10 @@ class User {
     }
 
     loggedInUser(){
-        signupButton().parentElement.remove();
-        signupButtonSideMenu().parentElement.remove();
+        if (!!signupButton()){
+            signupButton().parentElement.remove();
+            signupButtonSideMenu().parentElement.remove();
+        }
         this.displayLogInName();
         this.displayLogInNameSideMenu();
         Team.listOfTeams();
@@ -247,8 +249,14 @@ function createUser(e) {
     })
     .then(resp => resp.json())
     .then(object => {
-        appUsers.push(object);
+        submissionWorked(object);
     });
+}
+
+function submissionWorked(user){
+    appUsers.push(user);
+    loginUser();
+    // Forms.successfulFormSubmission();
 }
 
 function getAllUsers(){

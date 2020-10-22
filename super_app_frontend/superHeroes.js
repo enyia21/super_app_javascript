@@ -286,28 +286,32 @@ function buildCardNoSwitch(hero){
     divRow.appendChild(divColumn);
     return divRow
 }
+
 function displayHeroes(heroes){
-
     for(const hero of heroes){
-        const liHeroes = document.createElement('li');
-        const divVisibleHeader = document.createElement('div');
+        const checkHero = document.getElementById(`${hero.name}-${hero.id}`);
+        if (!checkHero){
+            const liHeroes = document.createElement('li');
+            const divVisibleHeader = document.createElement('div');
+            liHeroes.id = `${hero.name}-${hero.id}`
+    
+            divVisibleHeader.className= 'collapsible-header';
+            const iSubClass = document.createElement('i');
+            iSubClass.className= 'collapsible-header';
+            const divVisibleBody = document.createElement('div');
+            divVisibleBody.className = 'collapsible-body';
+            divVisibleHeader.innerHTML = `${hero['name']}`;
+            const divHero = buildCard(hero)
+            
+            divVisibleBody.appendChild(divHero);
+            divVisibleHeader.appendChild(iSubClass);
+            liHeroes.appendChild(divVisibleHeader);
+            liHeroes.appendChild(divVisibleBody);
+            
+            const ul = document.querySelector('ul.collapsible');
+            ul.appendChild(liHeroes);
 
-
-        divVisibleHeader.className= 'collapsible-header';
-        const iSubClass = document.createElement('i');
-        iSubClass.className= 'collapsible-header';
-        const divVisibleBody = document.createElement('div');
-        divVisibleBody.className = 'collapsible-body';
-        divVisibleHeader.innerHTML = `${hero['name']}`;
-        const divHero = buildCard(hero)
-        
-        divVisibleBody.appendChild(divHero);
-        divVisibleHeader.appendChild(iSubClass);
-        liHeroes.appendChild(divVisibleHeader);
-        liHeroes.appendChild(divVisibleBody);
-        
-        const ul = document.querySelector('ul.collapsible');
-        ul.appendChild(liHeroes);
+        }
     }
 }
 
@@ -317,4 +321,12 @@ function buildHeroImageTag(hero){
     const heroImage = document.createElement('img');
     heroImage.src = (!!hero['image']) ? hero['image'] : 'Print missing image';
     return heroImage
+}
+
+function buildHeroHeader(){
+    const ulForHerodisplay = document.createElement('ul');
+    ulForHerodisplay.className = "collapsible";
+    ulForHerodisplay.setAttribute('data-collapsible', "expandable")
+    const findHeroSection = document.getElementById('Superheroes');
+    findHeroSection.appendChild(ulForHerodisplay);
 }

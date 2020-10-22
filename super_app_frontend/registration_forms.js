@@ -11,22 +11,22 @@ const logInSideNav = () => loginButtonSideNav().addEventListener('click', loginC
 let signUpFormPresent = false;
 let loginFormPresent = false;
 function registerUser(){
-    if (!signUpFormPresent){
-        signUpFormPresent = true;
-        return Forms.newUserRegistration();
-    }else{
-        return null;
-    }
-
+    // if (!signUpFormPresent){
+    //     signUpFormPresent = true;
+    //     return Forms.newUserRegistration();
+    // }else{
+    //     return null;
+    // }
+    return Forms.newUserRegistration();
 }
 function loginCurrentUser(){
-    debugger;
-    if (!loginFormPresent){
-        loginFormPresent = true;
-        return Forms.buildLoginForm();
-    }else{
-        return null;
-    }
+//     if (!loginFormPresent){
+//         loginFormPresent = true;
+//         return Forms.buildLoginForm();
+//     }else{
+//         return null;
+//     }
+return Forms.buildLoginForm();
 }
 
 
@@ -41,7 +41,6 @@ class Forms{
     firstNameLabel.setAttribute('for', 'first_name');
     firstNameLabel.innerHTML = 'First Name'
     const inputFirstNameInformation = document.createElement('input');
-    debugger;
     if (this.userPresent){
         inputFirstNameInformation.value = `${currentUser._first_name}`;
     }
@@ -57,6 +56,10 @@ class Forms{
     return divFirstNameInputField;
     }
     static buildRegistrationForm(){
+        const formPresent = document.getElementById('user-registration').firstElementChild;
+        if (!!formPresent){
+            formPresent.remove();
+        }
         const formDiv = document.createElement("div");
         formDiv.className = "row";
         formDiv.appendChild(this.registrationBuildFullName());
@@ -82,7 +85,6 @@ class Forms{
         lastNameLabel.innerHTML = 'Last Name'
         const inputLastNameInformation = document.createElement('input');
         /**Attention!!!!!!!!!!!!!!!!!!!! EDIT FORM MOD STARTS HERE */
-        debugger;
         if (this.userPresent){
             inputLastNameInformation.value = `${currentUser._last_name}`;
         }
@@ -144,7 +146,6 @@ class Forms{
         ageLabel.setAttribute('for', 'age');
         ageLabel.innerHTML = 'Age'
         const inputAgeInformation = document.createElement('input');
-        debugger;
         if (this.userPresent){
             inputAgeInformation.value = `${currentUser._age}`;
         }
@@ -178,7 +179,6 @@ class Forms{
     }
     static editUserRegistration(){
         this.userPresent = true;
-        debugger
         this.buildRegistrationForm()
     }
     static buildLoginSubmitButton(){
@@ -189,7 +189,11 @@ class Forms{
         return makeUserButton;
     }
     static buildLoginForm(){
-        debugger;
+        const formPresent = document.getElementById('user-registration').firstElementChild;
+        if (!!formPresent){
+            formPresent.remove();
+        }
+
         const formDiv = document.createElement("div");
         formDiv.className = "row"; 
         const createHeading = document.createElement('h4');
@@ -208,7 +212,6 @@ class Forms{
     }
 
     static createNewTeam(){
-        debugger;
         const divCreateTeamRow = document.getElementById('add-team');
     
         const formCreateNewTeam = document.createElement('form');
@@ -242,5 +245,15 @@ class Forms{
         divCreateFormRow.appendChild(divCreateColumnRow);
         formCreateNewTeam.appendChild(divCreateFormRow);
         divCreateTeamRow.appendChild(formCreateNewTeam);
+    }
+
+    static successfulFormSubmition(){
+        const createAcknowledgement = document.querySelector(".brand-logo");
+        createAcknowledgement.innerHTML = `Welcome ${get_first_name().value}`
+
+        const userRegistrationSection = document.getElementById('user-registration');
+        const divUserRegistrationForm  = userRegistrationSection.firstElementChild;
+        userRegistrationSection.removeChild(divUserRegistrationForm);
+        return;
     }
 }

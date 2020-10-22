@@ -36,14 +36,13 @@ class Team{
         //Create a new team option
         const liCreateANewTeam = document.createElement('li');
         liCreateANewTeam.className='collection-item';
-        liCreateANewTeam.innerHTML="Create a New Team"
-        liCreateANewTeam.addEventListener('click', Forms.createNewTeam)
+        liCreateANewTeam.innerHTML="Create a New Team";
+        liCreateANewTeam.addEventListener('click', Forms.createNewTeam) 
         ulTeamCollection.appendChild(liTeamHeader);
         ulTeamCollection.appendChild(liCreateANewTeam);
         
         if (!!currentUser._teams){
             let teams = currentUser._teams;
-
             for(const team of teams){
                     const liTeam = document.createElement('li');
                     liTeam.className='collection-item';
@@ -80,19 +79,18 @@ class Team{
 
     static selectSuperHeroTeams(e){
         e.preventDefault();
+        Team.clearHeroesScreen();
         displayHeroes(heroes);
         let teams = currentUser._teams;
         fetch(serverUrl + 'teams/' + this.id)
         .then(resp=>resp.json())
         .then(object=> {
-
             return Team.buildCurrentTeam(object);
         })
         // buildCarouselOfHeroes(currentTeam, currentTeamMemberArray);
     }
 
     static buildCurrentTeam(team){
-        debugger
         this.buildCarouselOfHeroes(team, team['superheros']);
     }
         
@@ -109,18 +107,37 @@ class Team{
         const teamSection = document.querySelector('#team-slides');
         const ulCreateSlides = document.createElement('ul');
         ulCreateSlides.className = "slides";
+        
+        /***********Update Modification */
+        const findUpdateButtonSection = document.getElementById("Update_Carousel");
+
+        const createDivItem = document.createElement('div');
+        createDivItem.className = "fixed-action-btn";
+        const createAforUpdate = document.createElement('a');
+        createAforUpdate.className = "btn-floating";
+        createAforUpdate.classList.add("btn-large");
+        createAforUpdate.classList.add("green");
+        createAforUpdate.innerHTML = "Update";
+        createAforUpdate.addEventListener('click', Team.modifyUsersTeam);
+        const createIforIcon = document.createElement('i');
+        createIforIcon.className = "large material-icons";
+        createIforIcon.innerHTML = "sync";
+        createAforUpdate.appendChild(createIforIcon);
+        createDivItem.appendChild(createAforUpdate);
+        findUpdateButtonSection.appendChild(createDivItem);
+        /************************************ */
         for(const key in cTMArray){
             const liSuperHeroSlide = document.createElement('li');
             const imgOfHero = buildHeroImageTag(cTMArray[key]);
             liSuperHeroSlide.appendChild(imgOfHero)
             ulCreateSlides.appendChild(liSuperHeroSlide)
         }
-        const createUpdateButton = document.createElement('button');
-        createUpdateButton.innerHTML = "Update";
-        createUpdateButton.addEventListener('click', Team.modifyUsersTeam);
-        ulCreateSlides.appendChild(createUpdateButton);
+        // const createUpdateButton = document.createElement('button');
+        // createUpdateButton.innerHTML = "Update";
+        // createUpdateButton.addEventListener('click', Team.modifyUsersTeam);
+        // ulCreateSlides.appendChild(createUpdateButton);
         teamSection.appendChild(ulCreateSlides);
-        
+        callOnSlideCreation();
 
         
         // const imgOfHero = document
@@ -128,14 +145,12 @@ class Team{
         // const divCarousel = document.createElement('div');
         // divCarousel.className = "carousel";
         // for(const key in cTMArray){
-        //  
         //     // const currentTeamHero = document.getElementById(`${cTMArray[key]['name']} ${cTMArray[key]['id']}`);
         //     // currentTeamHero.value = 'on'
         //     const aCarouselItem = document.createElement('a');
         //     aCarouselItem.className = "carousel-item";
         //     const keyString = this.keyToString(key);
         //     aCarouselItem.href = `#${keyString}`;
-        //  
         //     const divHero = buildHeroImageTag(cTMArray[key]);
         //     aCarouselItem.appendChild(divHero);
         //     divCarousel.appendChild(aCarouselItem);
@@ -147,7 +162,11 @@ class Team{
  * 
  * 
  */
-    static addTeam(){
+    static addTeam(e){
+        if(!!e){
+            e.preventDefault();
+        }
+
        const team = {
             name: getTeamName().value,
             user_id: currentUser._id,       
@@ -165,12 +184,13 @@ class Team{
         .then(resp => resp.json())
         .then(object => {
             object
+            Team.modifyFormForNewTeam();
         });
-        Team.modifyFormForNewTeam();
     }
     static modifyFormForNewTeam(){
         const go = document.getElementById('add-team');
         go.removeChild(go.firstElementChild);
+        Team.clearHeroesScreen();
         currentUser.updateCurrentUser();
     }
     static deleteCurrentTeam(e){
@@ -187,11 +207,18 @@ class Team{
     }
 
     static modifyFormForDeletedTeam(){
+        Team.clearHeroesScreen();
         currentUser.updateCurrentUser();
+    }
+    
+    static clearHeroesScreen(){
+        const removeCarousel = document.querySelector('#team-slides').firstElementChild;
+        if(!!removeCarousel){
+            removeCarousel.remove();
+        }
     }
     static modifyUsersTeam(e){
         e.preventDefault()
-
             const team = {
                 name: Team.currentTeam["name"],
                 user_id: Team.currentTeam["user"]["id"],
@@ -208,7 +235,7 @@ class Team{
             })
             .then(resp => resp.json())
             .then(object => {
-                location.reload()
+                console.log(object);
             })
             //if on that means we are adding a team member 
             //if off that means that we are subtracting a team member           
